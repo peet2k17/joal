@@ -13,9 +13,14 @@ RUN apt-get update \
         && apt-get remove -y curl \
         && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 5081 49152-65534
+ENV JOAL_WEB_ENVIRONMENT "true"
+ENV JOAL_SERVER_PORT "8113"
+ENV JOAL_PATH_PREFIX "mysupersecretpath"
+ENV JOAL_SECRET_TOKEN "mysupersecrettoken"
+
+EXPOSE 5081 8113 49152-65534
 
 VOLUME /data
 
 ENTRYPOINT ["java","-jar","/joal/joal.jar"]
-CMD ["--joal-conf=/data"]
+CMD ["--joal-conf=/data --spring.main.web-environment=$JOAL_WEB_ENVIRONMENT --server.port=$JOAL_SERVER_PORT --joal.ui.path.prefix='$JOAL_PATH_PREFIX' --joal.ui.secret-token='$JOAL_SECRET_TOKEN'"]
